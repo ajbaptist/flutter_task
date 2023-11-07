@@ -37,7 +37,7 @@ class _HomeState extends State<Home> {
       ),
       body: Obx(() {
         return controller.loading.value
-            ? Center(
+            ? const Center(
                 child: CircularProgressIndicator(),
               )
             : controller.productData.value!.products!.isNotEmpty
