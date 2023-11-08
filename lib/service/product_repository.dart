@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
@@ -8,6 +10,38 @@ class ProductRepository {
     try {
       final response =
           await http.get(Uri.parse('https://dummyjson.com/products'));
+      if (response.statusCode == 200) {
+        return productModelFromJson(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+      return null;
+    }
+  }
+
+  static Future<List<String>?> getCategories() async {
+    try {
+      final response = await http
+          .get(Uri.parse('https://dummyjson.com/products/categories'));
+      if (response.statusCode == 200) {
+        var out = List<String>.from(json.decode(response.body).map((x) => x));
+        print("out-->$out");
+        return out;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+      return null;
+    }
+  }
+
+  static Future<ProductModel?> searchProduct({required String search}) async {
+    try {
+      final response = await http
+          .get(Uri.parse('https://dummyjson.com/products/search?q=$search'));
       if (response.statusCode == 200) {
         return productModelFromJson(response.body);
       } else {

@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -23,6 +24,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final ProductController controller = Get.put(ProductController());
+  final TextEditingController search = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +50,10 @@ class _HomeState extends State<Home> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextField(
+                          controller: search,
+                          onChanged: (value) {
+                            controller.searchProduct(value);
+                          },
                           decoration: InputDecoration(
                             hintText: 'What do you want to buy today.',
                             suffixIcon: const Icon(
@@ -57,6 +63,120 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                         ),
+                        const Gap(15),
+                        controller.categories.isNotEmpty
+                            ? Row(
+                                children: [
+                                  SizedBox(
+                                      width: 35.wp,
+                                      child: Text(
+                                        "Select Category",
+                                        style: TextStyle(
+                                            fontSize: 18.sp,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey),
+                                      )),
+                                  SizedBox(
+                                    width: 55.wp,
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton2<String>(
+                                        isExpanded: true,
+                                        hint: const Row(
+                                          children: [
+                                            Icon(
+                                              Icons.list,
+                                              size: 16,
+                                              color: Colors.black,
+                                            ),
+                                            SizedBox(
+                                              width: 4,
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                'Select Item',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        items: controller.categories
+                                            .map((String item) =>
+                                                DropdownMenuItem<String>(
+                                                  value: item,
+                                                  child: Text(
+                                                    item,
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ))
+                                            .toList(),
+                                        value: controller.selectedCat.value,
+                                        onChanged: (value) {
+                                          controller.onChange(value: value!);
+                                        },
+                                        buttonStyleData: ButtonStyleData(
+                                          height: 50,
+                                          width: 160,
+                                          padding: const EdgeInsets.only(
+                                              left: 14, right: 14),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(14),
+                                            border: Border.all(
+                                              color: Colors.black26,
+                                            ),
+                                            color: Colors.white,
+                                          ),
+                                          elevation: 2,
+                                        ),
+                                        iconStyleData: const IconStyleData(
+                                          icon: Icon(
+                                            Icons.arrow_forward_ios_outlined,
+                                          ),
+                                          iconSize: 14,
+                                          iconEnabledColor: Colors.black,
+                                          iconDisabledColor: Colors.grey,
+                                        ),
+                                        dropdownStyleData: DropdownStyleData(
+                                          maxHeight: 200,
+                                          width: 200,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(14),
+                                            color: Colors.white,
+                                          ),
+                                          offset: const Offset(-20, 0),
+                                          scrollbarTheme: ScrollbarThemeData(
+                                            radius: const Radius.circular(40),
+                                            thickness:
+                                                MaterialStateProperty.all(6),
+                                            thumbVisibility:
+                                                MaterialStateProperty.all(true),
+                                          ),
+                                        ),
+                                        menuItemStyleData:
+                                            const MenuItemStyleData(
+                                          height: 40,
+                                          padding: EdgeInsets.only(
+                                              left: 14, right: 14),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : SizedBox(),
                         const Gap(15),
                         const BannerWidget(),
                         const Gap(15),
